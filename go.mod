@@ -4,6 +4,8 @@ go 1.20
 
 require github.com/gorilla/mux v1.8.0
 
+require github.com/tysonmote/gommap v0.0.2 // indirect
+
 require (
 	github.com/golang/protobuf v1.4.1 // indirect
 	github.com/google/go-cmp v0.5.0 // indirect
