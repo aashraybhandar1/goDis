@@ -18,6 +18,7 @@ type store struct {
 	size uint64
 }
 
+// Given a file creates a new storeWhere logs are actually written)
 func newStore(f *os.File) (*store, error) {
 	fi, err := os.Stat(f.Name())
 	if err != nil {
@@ -32,8 +33,10 @@ func newStore(f *os.File) (*store, error) {
 }
 
 func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
+	//Locks writing to file . Lock released at end of method
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	//Writes at end of file
 	pos = s.size
 	if err := binary.Write(s.buf, enc, uint64(len(p))); err != nil {
 		return 0, 0, err
@@ -42,8 +45,11 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	if err != nil {
 		return 0, 0, err
 	}
+	//Somehow not sure how, but the first lenWidth bytes at this pos are how many bytes are written for the log.
+	//Hence the size increase by bytesWritten+lenWidth
 	w += lenWidth
 	s.size += uint64(w)
+	// returns num of bytes written and the position where the writing began
 	return uint64(w), pos, nil
 }
 
@@ -54,11 +60,12 @@ func (s *store) Read(pos uint64) (p []byte, err error) {
 		return nil, err
 	}
 	size := make([]byte, lenWidth)
+	//Reads first lenWidth bytes at position to find the length of the record at this poition
 	if _, err := s.File.ReadAt(size, int64(pos)); err != nil {
 		return nil, err
 	}
 	b := make([]byte, enc.Uint64(size))
-
+	//Reads fthe actual record which is written from pos+lenWidth
 	if _, err := s.File.ReadAt(b, int64(pos+lenWidth)); err != nil {
 		return nil, err
 	}
