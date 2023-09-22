@@ -4,6 +4,35 @@ package log.v1;
 
 option go_package = "github.com/aashraybhandar1/goDis/api/log_v1";
 
+//Service specifies that they are services
+
+// Produce endpoint is straightforward send a Record get offset
+//Consume is opposite of above
+//Consume Stream send an offset recieve a stream of Records?? Not sure why
+//Produce stream is basically batch processing for writing records
+service Log {
+    rpc Produce(ProduceRequest) returns (ProduceResponse) {}
+    rpc Consume(ConsumeRequest) returns (ConsumeResponse) {}
+    rpc ConsumeStream(ConsumeRequest) returns (stream ConsumeResponse) {}
+    rpc ProduceStream(stream ProduceRequest) returns (stream ProduceResponse) {}
+  }
+  
+  message ProduceRequest  {
+    Record record = 1;
+  }
+  
+  message ProduceResponse  {
+    uint64 offset = 1;
+  }
+  
+  message ConsumeRequest {
+    uint64 offset = 1;
+  }
+  
+  message ConsumeResponse {
+    Record record = 2;
+  }
+
 message Record {
     bytes value = 1;
     uint64 offset = 2;
