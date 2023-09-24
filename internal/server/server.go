@@ -113,6 +113,8 @@ func (s *grpcServer) ConsumeStream(
 	}
 }
 
+// Makes service depend on log interface than a log implementation in particular
+// So any implementation that implements these two methods will make it easy for us to use this service
 type CommitLog interface {
 	Append(*api.Record) (uint64, error)
 	Read(uint64) (*api.Record, error)
