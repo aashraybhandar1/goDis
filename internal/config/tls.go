@@ -28,7 +28,10 @@ certificates may be used for digital signatures, encrypting keys, and auth.
 
 6)server-csr.json will be used to configure our server's certs.
 
-7)
+7) Various tls config's generated below
+	a) Client Tls with just Root CA setup : Client to verify server's certificate(via CA)
+	b) Client Tls with Root CA and CertKey and CertValue setup.: Client to verify server and server to verify client
+	c) Server Tls with clientCA,Certificate and Client Auth setup : Again nboth way verification
 
 */
 
