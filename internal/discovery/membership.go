@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/serf/serf"
 )
 
+// Serf is used for discovery
 // Wrapper around serf for our membership
 type Membership struct {
 	Config
@@ -37,6 +38,9 @@ type Config struct {
 	StartJoinAddrs []string
 }
 
+// Boiler plate code to set up serf for service discovery
+// creates a channel for membership struct where services joining/leaving will be logged
+// starts a process called m.eventHandler
 func (m *Membership) setupSerf() (err error) {
 	addr, err := net.ResolveTCPAddr("tcp", m.BindAddr)
 	if err != nil {
